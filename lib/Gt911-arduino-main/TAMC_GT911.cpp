@@ -89,13 +89,13 @@ void TAMC_GT911::read(void) {
 TP_Point TAMC_GT911::readPoint(uint8_t *data) {
   uint16_t temp;
   uint8_t id = data[0];
-  uint16_t x = data[1] + (data[2] << 8);
-  uint16_t y = data[3] + (data[4] << 8);
+  uint16_t y = data[1] + (data[2] << 8);
+  uint16_t x = data[3] + (data[4] << 8);
   uint16_t size = data[5] + (data[6] << 8);
   switch (rotation){
     case ROTATION_NORMAL:
-      x = width - x;
-      y = height - y;
+      // x = width - x;
+      // y = height - y;
       break;
     case ROTATION_LEFT:
       temp = x;

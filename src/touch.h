@@ -20,13 +20,13 @@
  #define TOUCH_GT911
  #define TOUCH_GT911_SCL 20
  #define TOUCH_GT911_SDA 19
- #define TOUCH_GT911_INT 18
+ #define TOUCH_GT911_INT -1
  #define TOUCH_GT911_RST 38
  #define TOUCH_GT911_ROTATION ROTATION_NORMAL
- #define TOUCH_MAP_X1 480
- #define TOUCH_MAP_X2 0
- #define TOUCH_MAP_Y1 272
- #define TOUCH_MAP_Y2 0
+ #define TOUCH_MAP_X1 0
+ #define TOUCH_MAP_X2 480
+ #define TOUCH_MAP_Y1 0
+ #define TOUCH_MAP_Y2 272
  
 /* uncomment for XPT2046 */
 // #define TOUCH_XPT2046
@@ -52,6 +52,7 @@ bool touch_touched_flag = true, touch_released_flag = true;
 #elif defined(TOUCH_GT911)
 #include <Wire.h>
 #include <TAMC_GT911.h>
+#include <lvgl.h>
 TAMC_GT911 ts = TAMC_GT911(TOUCH_GT911_SDA, TOUCH_GT911_SCL, TOUCH_GT911_INT, TOUCH_GT911_RST, max(TOUCH_MAP_X1, TOUCH_MAP_X2), max(TOUCH_MAP_Y1, TOUCH_MAP_Y2));
 
 #elif defined(TOUCH_XPT2046)

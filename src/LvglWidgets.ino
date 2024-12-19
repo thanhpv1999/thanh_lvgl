@@ -42,12 +42,17 @@ Arduino_ESP32RGBPanel *bus = new Arduino_ESP32RGBPanel(
     8 /* B0 */, 3 /* B1 */, 46 /* B2 */, 9 /* B3 */, 1 /* B4 */
 );
 
+// Arduino_RPi_DPI_RGBPanel *gfx = new Arduino_RPi_DPI_RGBPanel(
+//     bus,
+//     800 /* width */, 0 /* hsync_polarity */, 8 /* hsync_front_porch */, 4 /* hsync_pulse_width */, 8 /* hsync_back_porch */,
+//     480 /* height */, 0 /* vsync_polarity */, 8 /* vsync_front_porch */, 4 /* vsync_pulse_width */, 8 /* vsync_back_porch */,
+//     1 /* pclk_active_neg */, 14000000 /* prefer_speed */, true /* auto_flush */);
+
 Arduino_RPi_DPI_RGBPanel *gfx = new Arduino_RPi_DPI_RGBPanel(
-    bus,
-    480, 0, 10, 10, 20,
-    272, 0, 4, 4, 8,
-    1, 7000000, false
-);
+  bus,
+  480 /* width */, 0 /* hsync_polarity */, 8 /* hsync_front_porch */, 4 /* hsync_pulse_width */, 43 /* hsync_back_porch */,
+  272 /* height */, 0 /* vsync_polarity */, 8 /* vsync_front_porch */, 4 /* vsync_pulse_width */, 12 /* vsync_back_porch */,
+  1 /* pclk_active_neg */, 9000000 /* prefer_speed */, true /* auto_flush */);
 
 #include "touch.h"
 
@@ -152,10 +157,28 @@ void setup()
     indev_drv.read_cb = my_touchpad_read;
     lv_indev_drv_register(&indev_drv);
 
-    lv_demo_widgets();
+    // lv_demo_widgets();
+    lv_example_qrcode_1();
 
     Serial.println("Setup done");
   }
+}
+
+void lv_example_qrcode_1(void)
+{
+    lv_color_t bg_color = lv_palette_lighten(LV_PALETTE_LIGHT_BLUE, 5);
+    lv_color_t fg_color = lv_palette_darken(LV_PALETTE_BLUE, 4);
+
+    lv_obj_t * qr = lv_qrcode_create(lv_scr_act(), 150, fg_color, bg_color);
+
+    /*Set data*/
+    const char * data = "https://lvgl.io";
+    lv_qrcode_update(qr, data, strlen(data));
+    lv_obj_center(qr);
+
+    /*Add a border with bg_color*/
+    lv_obj_set_style_border_color(qr, bg_color, 0);
+    lv_obj_set_style_border_width(qr, 5, 0);
 }
 
 void loop()
