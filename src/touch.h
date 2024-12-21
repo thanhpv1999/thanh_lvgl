@@ -53,6 +53,7 @@ bool touch_touched_flag = true, touch_released_flag = true;
 #include <Wire.h>
 #include <TAMC_GT911.h>
 #include <lvgl.h>
+#include <genQrCode.h>
 TAMC_GT911 ts = TAMC_GT911(TOUCH_GT911_SDA, TOUCH_GT911_SCL, TOUCH_GT911_INT, TOUCH_GT911_RST, max(TOUCH_MAP_X1, TOUCH_MAP_X2), max(TOUCH_MAP_Y1, TOUCH_MAP_Y2));
 
 #elif defined(TOUCH_XPT2046)
