@@ -13,7 +13,7 @@
 #define MQTT_LED1_TOPIC "MQTT_ESP32/LED1"
 #define MQTT_LED2_TOPIC "MQTT_ESP32/LED2"
 
-void setup_mqtt();
+void setup_wifi_mqtt();
 void loop_mqtt();
 
 #endif

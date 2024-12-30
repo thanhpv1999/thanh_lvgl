@@ -9,20 +9,13 @@ const long interval = 1000;
 
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
-String topicLates = " ";     
+String topicLates = " ";
+bool isConnectWifi = false;
 
-void setup_wifi() {
+void setup_wifi_mqtt() {
     Serial.print("Connecting to ");
     Serial.println(ssid);
     WiFi.begin(ssid, password); 
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-    }
-    Serial.println("");
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
 }
 
 void connect_to_broker() {
@@ -90,31 +83,35 @@ void callback(char* topic, byte *payload, unsigned int length) {
     }
 }
 
-void setup_mqtt(){
-    //Serial.setTimeout(500);
-    setup_wifi();
-    client.setServer(MQTT_SERVER, MQTT_PORT );
-    client.setCallback(callback);
-    connect_to_broker();
-    Serial.println("Start transfer");
-    // pinMode(LED1, OUTPUT);
-    // pinMode(LED2, OUTPUT);
+bool setup_mqtt(){
+     
+    if(WiFi.status() != WL_CONNECTED) {
+        isConnectWifi = false;
+    }else if(isConnectWifi == false) {
+        isConnectWifi = true;
+        Serial.println("");
+        Serial.println("WiFi connected");
+        Serial.println("IP address: ");
+        Serial.println(WiFi.localIP());
+
+        client.setServer(MQTT_SERVER, MQTT_PORT );
+        client.setCallback(callback);
+        connect_to_broker();
+        Serial.println("Start transfer");
+    }
+
+    return isConnectWifi;
 }
 
 void loop_mqtt()
 {
-    client.loop();
-    if (!client.connected())
+    if(setup_mqtt())
     {
-        connect_to_broker();
-    }else{
-        // unsigned long currentMillis = millis();  
-        // if (currentMillis - previousMillis >= interval) {  
-        //     previousMillis = currentMillis;
-        //     Serial.println("Sending message every second");
-        //     if(topicLates != " "){
-        //         client.publish(topicLates.c_str(), "hi"); 
-        //     }
-        // }
+        client.loop();
+        if (!client.connected())
+        {
+            connect_to_broker();
+        }else{
+        }
     }
 }

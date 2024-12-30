@@ -9,7 +9,7 @@ void setup()
   Serial.begin(115200);
   Serial.println("LVGL Demo");
 
-  setup_mqtt();
+  setup_wifi_mqtt();
 
   setupRfid_init();
 
