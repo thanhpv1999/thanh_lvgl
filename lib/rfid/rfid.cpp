@@ -1,4 +1,6 @@
 #include "rfid.h"
+#include <mqtt.h>
+#include <genQrCode.h>
 
 String rfIdMaster = "898B313";
 boolean checkMaster = false;
@@ -117,7 +119,11 @@ void checkRfid_loop(){
     }else if(uidString != rfIdMaster){
         if(checkIfUidExists(uidString)){
             Serial.println("saved"); 
+            updateNoticeLable("rfid: done");
+            publishMessage(MQTT_STATUS_TOPIC, "rfid: done");
         }else{
+            updateNoticeLable("rfid: fail");
+            publishMessage(MQTT_STATUS_TOPIC, "rfid: fail");
             Serial.println("not found"); 
         }
     }

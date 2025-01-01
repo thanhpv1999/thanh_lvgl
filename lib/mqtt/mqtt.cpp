@@ -1,7 +1,6 @@
 #include "mqtt.h"
+#include <genQrCode.h>
 
-String ledStatus1 = "ON";
-String ledStatus2 = "ON";
 const char* ssid = "FPT_CT";
 const char* password = "123456789";
 unsigned long previousMillis = 0; 
@@ -25,8 +24,9 @@ void connect_to_broker() {
         clientId += String(random(0xffff), HEX);
         if (client.connect(clientId.c_str())) {
             Serial.println("connected");
-            client.subscribe(MQTT_LED1_TOPIC);
-            client.subscribe(MQTT_LED2_TOPIC);
+            client.subscribe(MQTT_TEXTQR_TOPIC);
+            client.subscribe(MQTT_STATUS_TOPIC);
+            client.subscribe(MQTT_REMOTE_TOPIC);
         } else {
             Serial.print("failed, rc=");
             Serial.print(client.state());
@@ -37,49 +37,28 @@ void connect_to_broker() {
 }
 
 void callback(char* topic, byte *payload, unsigned int length) {
-    char status[20];
     Serial.println("-------new message from broker-----");
     Serial.print("topic: ");
     Serial.println(topic);
     Serial.print("message: ");
     Serial.write(payload, length);
     Serial.println();
-    for(int i = 0; i<length; i++)
+
+    char message[length + 1];           
+    memcpy(message, payload, length);   
+    message[length] = '\0';             
+    Serial.print("message thanhpv2499: ");
+    Serial.println(message);            
+
+    if(String(topic) == MQTT_TEXTQR_TOPIC)
     {
-        status[i] = payload[i];
-    }
-    Serial.println(status);
-    topicLates = String(topic);
-    if(String(topic) == MQTT_LED1_TOPIC)
-    {
-        if(String(status) == "OFF")
-        {
-            ledStatus1 = "OFF";
-            digitalWrite(LED1, LOW);
-            Serial.println("LED1 OFF");
-        }
-        else if(String(status) == "ON")
-        {
-            ledStatus1 = "ON";
-            digitalWrite(LED1, HIGH);
-            Serial.println("LED1 ON");
-        }
+        update_qr_code_MQTT(message);
     }
 
-    if(String(topic) == MQTT_LED2_TOPIC)
+    if(String(topic) == MQTT_REMOTE_TOPIC)
     {
-        if(String(status) == "OFF")
-        {
-            ledStatus2 = "OFF";
-            digitalWrite(LED2, LOW);
-            Serial.println("LED2 OFF");
-        }
-        else if(String(status) == "ON")
-        {
-            ledStatus2 = "ON";
-            digitalWrite(LED2, HIGH);
-            Serial.println("LED2 ON");
-        }
+        updateNoticeLable(message);
+        publishMessage(MQTT_STATUS_TOPIC, message);
     }
 }
 
@@ -113,5 +92,21 @@ void loop_mqtt()
             connect_to_broker();
         }else{
         }
+    }
+}
+
+void publishMessage(const char* topic, const char* message) {
+    if (client.connected()) {
+        bool success = client.publish(topic, message);
+        if (success) {
+            Serial.print("Message published to topic ");
+            Serial.print(topic);
+            Serial.println(": ");
+            Serial.println(message);
+        } else {
+            Serial.println("Failed to publish message.");
+        }
+    } else {
+        Serial.println("Client not connected. Cannot publish message.");
     }
 }

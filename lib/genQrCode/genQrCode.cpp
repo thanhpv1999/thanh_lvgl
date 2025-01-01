@@ -1,13 +1,22 @@
 #include <genQrCode.h>
+#include <Arduino.h>
 
 // Biến toàn cục
 static lv_obj_t *qr;
 static lv_obj_t *textarea;
 static lv_obj_t *keyboard;  // Bàn phím
+static lv_obj_t *label;
+
+// // Callback để cập nhật QR code
+// void update_qr_code(lv_event_t *e) {
+//     const char *text = lv_textarea_get_text(textarea);
+//     if (strlen(text) > 0) {
+//         lv_qrcode_update(qr, text, strlen(text));
+//     }
+// }
 
 // Callback để cập nhật QR code
-void update_qr_code(lv_event_t *e) {
-    const char *text = lv_textarea_get_text(textarea);
+void update_qr_code_MQTT(const char *text) {
     if (strlen(text) > 0) {
         lv_qrcode_update(qr, text, strlen(text));
     }
@@ -27,6 +36,10 @@ void text_input_event_cb(lv_event_t *e) {
         lv_keyboard_set_textarea(keyboard, NULL);
         lv_obj_add_flag(keyboard, LV_OBJ_FLAG_HIDDEN);
     }
+}
+
+void updateNoticeLable(const char *textLable){
+    lv_label_set_text(label, textLable); 
 }
 
 // Tạo màn hình giao diện QR code
@@ -51,23 +64,29 @@ void create_qr_code_screen(void) {
     lv_obj_set_style_pad_all(left_panel, 10, 0);
     lv_obj_set_flex_align(left_panel, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER); // Căn giữa nội dung
 
+    // Ô hiển thị text (label)
+    label = lv_label_create(left_panel);
+    lv_label_set_text(label, "thanhpv2499"); 
+    lv_obj_set_width(label, lv_pct(100));    
+    lv_label_set_long_mode(label, LV_LABEL_LONG_WRAP); 
+    lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0); 
 
-    // Ô nhập text (textarea)
-    textarea = lv_textarea_create(left_panel);
-    lv_textarea_set_one_line(textarea, true);
-    lv_textarea_set_placeholder_text(textarea, "Enter text for QR code");
-    lv_obj_set_width(textarea, lv_pct(100));
-    lv_obj_add_event_cb(textarea, text_input_event_cb, LV_EVENT_ALL, NULL);
+    // // Ô nhập text (textarea)
+    // textarea = lv_textarea_create(left_panel);
+    // lv_textarea_set_one_line(textarea, true);
+    // lv_textarea_set_placeholder_text(textarea, "Enter text for QR code");
+    // lv_obj_set_width(textarea, lv_pct(100));
+    // lv_obj_add_event_cb(textarea, text_input_event_cb, LV_EVENT_ALL, NULL);
 
-    // Nút để cập nhật QR code
-    lv_obj_t *btn = lv_btn_create(left_panel);
-    lv_obj_set_width(btn, lv_pct(100));
-    lv_obj_t *btn_label = lv_label_create(btn);
-    lv_label_set_text(btn_label, "Generate QR Code");
-    lv_obj_center(btn_label);
+    // // Nút để cập nhật QR code
+    // lv_obj_t *btn = lv_btn_create(left_panel);
+    // lv_obj_set_width(btn, lv_pct(100));
+    // lv_obj_t *btn_label = lv_label_create(btn);
+    // lv_label_set_text(btn_label, "Generate QR Code");
+    // lv_obj_center(btn_label);
 
-    // Gắn sự kiện cho nút
-    lv_obj_add_event_cb(btn, update_qr_code, LV_EVENT_CLICKED, NULL);
+    // // Gắn sự kiện cho nút
+    // lv_obj_add_event_cb(btn, update_qr_code, LV_EVENT_CLICKED, NULL);
 
     // Panel bên phải (QR code)
     lv_obj_t *right_panel = lv_obj_create(container);

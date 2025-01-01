@@ -9,7 +9,7 @@
 #define SCK_PIN 12  // Serial Clock
 #define MISO_PIN 13 // Master In Slave Out
 #define MOSI_PIN 11 // Master Out Slave In
-#define SS_PIN 19
+#define SS_PIN 10
 #define RST_PIN 18
 
 void setupRfid_init();

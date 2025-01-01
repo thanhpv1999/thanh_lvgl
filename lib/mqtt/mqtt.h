@@ -10,10 +10,12 @@
 #define MQTT_PORT 1883
 #define MQTT_USER "mabattu123"
 #define MQTT_PASSWORD "12345678"
-#define MQTT_LED1_TOPIC "MQTT_ESP32/LED1"
-#define MQTT_LED2_TOPIC "MQTT_ESP32/LED2"
+#define MQTT_TEXTQR_TOPIC "MQTT_ESP32/TEXTQR"
+#define MQTT_STATUS_TOPIC "MQTT_ESP32/STATUS"
+#define MQTT_REMOTE_TOPIC "MQTT_ESP32/REMOTE"
 
 void setup_wifi_mqtt();
 void loop_mqtt();
+void publishMessage(const char* topic, const char* message);
 
 #endif
