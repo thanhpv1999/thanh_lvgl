@@ -6,19 +6,27 @@ static lv_obj_t *qr;
 static lv_obj_t *textarea;
 static lv_obj_t *keyboard;  // Bàn phím
 static lv_obj_t *label;
+static lv_obj_t *btn_label;
+bool accessQr = false;
 
-// // Callback để cập nhật QR code
-// void update_qr_code(lv_event_t *e) {
-//     const char *text = lv_textarea_get_text(textarea);
-//     if (strlen(text) > 0) {
-//         lv_qrcode_update(qr, text, strlen(text));
-//     }
-// }
+// Callback để cập nhật QR code
+void update_qr_code(lv_event_t *e) {
+    if(accessQr == false){
+        accessQr = true;
+        lv_label_set_text(btn_label, "2499 QR: true");
+    }else{
+        accessQr = false;
+        lv_qrcode_update(qr, "", 0);
+        lv_label_set_text(btn_label, "2499 QR: false");        
+    }
+}
 
 // Callback để cập nhật QR code
 void update_qr_code_MQTT(const char *text) {
-    if (strlen(text) > 0) {
-        lv_qrcode_update(qr, text, strlen(text));
+    if(accessQr == true){
+        if (strlen(text) > 0) {
+            lv_qrcode_update(qr, text, strlen(text));
+        }
     }
 }
 
@@ -78,15 +86,15 @@ void create_qr_code_screen(void) {
     // lv_obj_set_width(textarea, lv_pct(100));
     // lv_obj_add_event_cb(textarea, text_input_event_cb, LV_EVENT_ALL, NULL);
 
-    // // Nút để cập nhật QR code
-    // lv_obj_t *btn = lv_btn_create(left_panel);
-    // lv_obj_set_width(btn, lv_pct(100));
-    // lv_obj_t *btn_label = lv_label_create(btn);
-    // lv_label_set_text(btn_label, "Generate QR Code");
-    // lv_obj_center(btn_label);
+    // Nút để cập nhật QR code
+    lv_obj_t *btn = lv_btn_create(left_panel);
+    lv_obj_set_width(btn, lv_pct(100));
+    btn_label = lv_label_create(btn);
+    lv_label_set_text(btn_label, "2499 QR: false");
+    lv_obj_center(btn_label);
 
-    // // Gắn sự kiện cho nút
-    // lv_obj_add_event_cb(btn, update_qr_code, LV_EVENT_CLICKED, NULL);
+    // Gắn sự kiện cho nút
+    lv_obj_add_event_cb(btn, update_qr_code, LV_EVENT_CLICKED, NULL);
 
     // Panel bên phải (QR code)
     lv_obj_t *right_panel = lv_obj_create(container);
@@ -102,6 +110,7 @@ void create_qr_code_screen(void) {
     lv_obj_set_style_border_color(qr, bg_color, 0);
     lv_obj_set_style_border_width(qr, 2, 0);
     lv_obj_center(qr);
+    lv_qrcode_update(qr, "", 0);
 
     // Tạo bàn phím nhưng ẩn đi lúc đầu
     keyboard = lv_keyboard_create(lv_scr_act());

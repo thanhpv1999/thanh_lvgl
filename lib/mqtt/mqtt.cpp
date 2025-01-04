@@ -48,18 +48,20 @@ void callback(char* topic, byte *payload, unsigned int length) {
     memcpy(message, payload, length);   
     message[length] = '\0';             
     Serial.print("message thanhpv2499: ");
-    Serial.println(message);            
+    Serial.println(message);    
 
-    if(String(topic) == MQTT_TEXTQR_TOPIC)
-    {
-        update_qr_code_MQTT(message);
-    }
+    if(accessQr){
+        if(String(topic) == MQTT_TEXTQR_TOPIC)
+        {
+            update_qr_code_MQTT(message);
+        }
 
-    if(String(topic) == MQTT_REMOTE_TOPIC)
-    {
-        updateNoticeLable(message);
-        publishMessage(MQTT_STATUS_TOPIC, message);
-    }
+        if(String(topic) == MQTT_REMOTE_TOPIC)
+        {
+            updateNoticeLable(message);
+            publishMessage(MQTT_STATUS_TOPIC, message);
+        }
+    }        
 }
 
 bool setup_mqtt(){
