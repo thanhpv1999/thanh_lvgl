@@ -3,7 +3,7 @@
 #include <genQrCode.h>
 
 String rfIdMaster = "898B313";
-boolean checkMaster = false;
+bool checkMaster = false;
 MFRC522 rfid(SS_PIN, RST_PIN);
 MFRC522::MIFARE_Key key;
 byte nuidPICC[4];
@@ -32,12 +32,14 @@ void writeAndDeleteUidToFlash(const String& uid) {
     preferences.begin("rfid", false);
     preferences.remove(uid.c_str());
     Serial.println("UID removed from flash.");
+    updateNoticeLable_rf("Removed card", true);
     preferences.end();
     return; 
   }
   preferences.begin("rfid", false);
   preferences.putString(uid.c_str(), uid);
   Serial.println("UID written to flash.");
+  updateNoticeLable_rf("Written card", true);
   preferences.end(); 
 }
 
@@ -109,6 +111,7 @@ void checkRfid_loop(){
     if(uidString == rfIdMaster){
         checkMaster = true;
         Serial.println("master card"); 
+        updateNoticeLable_rf("Master card", true);
     }else{
         Serial.println("not master card"); 
     }
@@ -119,10 +122,10 @@ void checkRfid_loop(){
     }else if(uidString != rfIdMaster){
         if(checkIfUidExists(uidString)){
             Serial.println("saved"); 
-            updateNoticeLable("rfid: done");
+            updateNoticeLable("rfid: done", true);
             publishMessage(MQTT_STATUS_TOPIC, "rfid: done");
         }else{
-            updateNoticeLable("rfid: fail");
+            updateNoticeLable("rfid: fail", true);
             publishMessage(MQTT_STATUS_TOPIC, "rfid: fail");
             Serial.println("not found"); 
         }

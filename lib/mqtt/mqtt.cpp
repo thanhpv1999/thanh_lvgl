@@ -58,7 +58,7 @@ void callback(char* topic, byte *payload, unsigned int length) {
 
         if(String(topic) == MQTT_REMOTE_TOPIC)
         {
-            updateNoticeLable(message);
+            updateNoticeLable(message, true);
             publishMessage(MQTT_STATUS_TOPIC, message);
         }
     }        

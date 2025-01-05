@@ -12,6 +12,8 @@
 #define SS_PIN 10
 #define RST_PIN 18
 
+extern bool checkMaster;
+
 void setupRfid_init();
 void checkRfid_loop();
 

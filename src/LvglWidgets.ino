@@ -24,4 +24,5 @@ void loop()
   setupDevice_loop();
   checkRfid_loop();
   loop_mqtt();
+  display_loop();
 }

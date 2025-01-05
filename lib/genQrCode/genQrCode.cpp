@@ -6,8 +6,11 @@ static lv_obj_t *qr;
 static lv_obj_t *textarea;
 static lv_obj_t *keyboard;  // Bàn phím
 static lv_obj_t *label;
+static lv_obj_t *label_rf;
 static lv_obj_t *btn_label;
 bool accessQr = false;
+bool updateNotice = false;
+bool updateNotice_rf = false;
 
 // Callback để cập nhật QR code
 void update_qr_code(lv_event_t *e) {
@@ -46,8 +49,14 @@ void text_input_event_cb(lv_event_t *e) {
     }
 }
 
-void updateNoticeLable(const char *textLable){
+void updateNoticeLable(const char *textLable, bool update){
+    updateNotice = update;
     lv_label_set_text(label, textLable); 
+}
+
+void updateNoticeLable_rf(const char *textLable, bool update){
+    updateNotice_rf = update;
+    lv_label_set_text(label_rf, textLable); 
 }
 
 // Tạo màn hình giao diện QR code
@@ -74,10 +83,17 @@ void create_qr_code_screen(void) {
 
     // Ô hiển thị text (label)
     label = lv_label_create(left_panel);
-    lv_label_set_text(label, "thanhpv2499"); 
+    lv_label_set_text(label, "Welcome"); 
     lv_obj_set_width(label, lv_pct(100));    
     lv_label_set_long_mode(label, LV_LABEL_LONG_WRAP); 
     lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0); 
+
+    // Ô hiển thị text (label)
+    label_rf = lv_label_create(left_panel);
+    lv_label_set_text(label_rf, "*****"); 
+    lv_obj_set_width(label_rf, lv_pct(100));    
+    lv_label_set_long_mode(label_rf, LV_LABEL_LONG_WRAP); 
+    lv_obj_set_style_text_align(label_rf, LV_TEXT_ALIGN_CENTER, 0); 
 
     // // Ô nhập text (textarea)
     // textarea = lv_textarea_create(left_panel);
@@ -116,4 +132,35 @@ void create_qr_code_screen(void) {
     keyboard = lv_keyboard_create(lv_scr_act());
     lv_obj_add_flag(keyboard, LV_OBJ_FLAG_HIDDEN);
     lv_keyboard_set_mode(keyboard, LV_KEYBOARD_MODE_TEXT_LOWER);
+}
+
+unsigned long _lastUpdate = 0;
+unsigned long _currentMillis = millis(); 
+unsigned long lastUpdate_rf = 0;
+unsigned long currentMillis_rf = millis(); 
+extern bool checkMaster;
+
+void display_loop(){
+    if(updateNotice){
+        _currentMillis = millis();
+        if (_currentMillis - _lastUpdate >= 5000) {
+            _lastUpdate = _currentMillis;
+            updateNoticeLable("Welcome", false);       
+        }
+    }else{
+        _currentMillis = millis();
+        _lastUpdate = _currentMillis;
+    }
+
+    if(updateNotice_rf){
+        currentMillis_rf = millis();
+        if (currentMillis_rf - lastUpdate_rf >= 5000) {
+            lastUpdate_rf = currentMillis_rf;
+            checkMaster = false;
+            updateNoticeLable_rf("*****", false);       
+        }
+    }else{
+        currentMillis_rf = millis();
+        lastUpdate_rf = currentMillis_rf;
+    }
 }
