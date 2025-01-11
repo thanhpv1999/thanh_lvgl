@@ -5,7 +5,7 @@
 
 void create_qr_code_screen();
 void update_qr_code_MQTT(const char *text);
-void updateNoticeLable(const char *textLable, bool update);
+void updateNoticeLable(const char *textLable, bool update, bool sttOpen);
 void updateNoticeLable_rf(const char *textLable, bool update);
 void updateNoticeLable_mqtt(const char *textLable);
 void display_loop();

@@ -122,10 +122,10 @@ void checkRfid_loop(){
     }else if(uidString != rfIdMaster){
         if(checkIfUidExists(uidString)){
             Serial.println("saved"); 
-            updateNoticeLable("rfid: done", true);
+            updateNoticeLable("rfid: done", true, true);
             publishMessage(MQTT_STATUS_TOPIC, "rfid: done");
         }else{
-            updateNoticeLable("rfid: fail", true);
+            updateNoticeLable("rfid: fail", true, false);
             publishMessage(MQTT_STATUS_TOPIC, "rfid: fail");
             Serial.println("not found"); 
         }

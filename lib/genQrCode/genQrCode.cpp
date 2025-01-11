@@ -50,9 +50,21 @@ void text_input_event_cb(lv_event_t *e) {
     }
 }
 
-void updateNoticeLable(const char *textLable, bool update){
+void updateNoticeLable(const char *textLable, bool update, bool sttOpen){
     updateNotice = update;
     lv_label_set_text(label, textLable); 
+    if(update){
+        if(sttOpen){
+            lv_obj_set_style_bg_color(label, lv_color_hex(0x00FF00), 0); // Nền xanh lá
+            lv_obj_set_style_text_color(label, lv_color_hex(0xFFFFFF), 0); // Chữ trắng
+        }else{
+            lv_obj_set_style_bg_color(label, lv_color_hex(0xFF0000), 0); // Nền đỏ (hex màu 0xFF0000)
+            lv_obj_set_style_text_color(label, lv_color_hex(0xFFFFFF), 0);
+        }
+    }else{
+        lv_obj_set_style_bg_color(label, lv_color_hex(0xFFFFFF), 0); // Nền trắng (hex màu 0xFFFFFF)
+        lv_obj_set_style_text_color(label, lv_color_hex(0x000000), 0); // 
+    }
 }
 
 void updateNoticeLable_rf(const char *textLable, bool update){
@@ -89,9 +101,11 @@ void create_qr_code_screen(void) {
     // Ô hiển thị text (label)
     label = lv_label_create(left_panel);
     lv_label_set_text(label, "Welcome"); 
-    lv_obj_set_width(label, lv_pct(100));    
+    lv_obj_set_width(label, lv_pct(100));
+    lv_obj_set_height(label, LV_SIZE_CONTENT); // Đặt chiều cao phù hợp với nội dung
     lv_label_set_long_mode(label, LV_LABEL_LONG_WRAP); 
-    lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0); 
+    lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_set_style_bg_opa(label, LV_OPA_COVER, 0);
 
     // Ô hiển thị text (label)
     label_rf = lv_label_create(left_panel);
@@ -156,7 +170,7 @@ void display_loop(){
         _currentMillis = millis();
         if (_currentMillis - _lastUpdate >= 5000) {
             _lastUpdate = _currentMillis;
-            updateNoticeLable("Welcome", false);       
+            updateNoticeLable("Welcome", false, false);       
         }
     }else{
         _currentMillis = millis();

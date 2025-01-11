@@ -1,5 +1,7 @@
 #include "mqtt.h"
 #include <genQrCode.h>
+#include <iostream>
+#include <cstring> // Để sử dụng strstr
 
 const char* ssid = "ThanhHoa";
 const char* password = "1234567890";
@@ -69,7 +71,11 @@ void callback(char* topic, byte *payload, unsigned int length) {
 
         if(String(topic) == MQTT_REMOTE_TOPIC)
         {
-            updateNoticeLable(message, true);
+            if (std::strstr(message, "fail")) {
+                updateNoticeLable(message, true, false);
+            } else {
+                updateNoticeLable(message, true, true);
+            }
             publishMessage(MQTT_STATUS_TOPIC, message);
         }
     }        
