@@ -7,6 +7,7 @@ static lv_obj_t *textarea;
 static lv_obj_t *keyboard;  // Bàn phím
 static lv_obj_t *label;
 static lv_obj_t *label_rf;
+static lv_obj_t *label_mqtt;
 static lv_obj_t *btn_label;
 bool accessQr = false;
 bool updateNotice = false;
@@ -57,6 +58,10 @@ void updateNoticeLable(const char *textLable, bool update){
 void updateNoticeLable_rf(const char *textLable, bool update){
     updateNotice_rf = update;
     lv_label_set_text(label_rf, textLable); 
+}
+
+void updateNoticeLable_mqtt(const char *textLable){
+    lv_label_set_text(label_mqtt, textLable); 
 }
 
 // Tạo màn hình giao diện QR code
@@ -111,6 +116,12 @@ void create_qr_code_screen(void) {
 
     // Gắn sự kiện cho nút
     lv_obj_add_event_cb(btn, update_qr_code, LV_EVENT_CLICKED, NULL);
+
+    label_mqtt = lv_label_create(left_panel);
+    lv_label_set_text(label_mqtt, "Mqtt Disconnect"); 
+    lv_obj_set_width(label_mqtt, lv_pct(100));    
+    lv_label_set_long_mode(label_mqtt, LV_LABEL_LONG_WRAP); 
+    lv_obj_set_style_text_align(label_mqtt, LV_TEXT_ALIGN_CENTER, 0); 
 
     // Panel bên phải (QR code)
     lv_obj_t *right_panel = lv_obj_create(container);
